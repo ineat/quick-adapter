@@ -17,23 +17,22 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView mRecyclerView;
-
     //region android lifecycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
 
-        List<Ineatien> ineatienList = Arrays.asList(Provider.INEATIENS);
+        final List<Ineatien> ineatienList = Arrays.asList(Provider.INEATIENS);
         SimpleQuickAdapter<Ineatien, IneatienQuickItemRenderer> simpleQuickAdapter =
                 new SimpleQuickAdapter<>(ineatienList, IneatienQuickItemRenderer.class);
 
+        recyclerView.setAdapter(simpleQuickAdapter);
 
 
         QuickAdapter<Ineatien> quickAdapter = new QuickAdapter<>(ineatienList);
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             return IneatienQuickItemRenderer.class;
         });
 
-        mRecyclerView.setAdapter(quickAdapter);
+        recyclerView.setAdapter(quickAdapter);
     }
     //endregion android lifecycle
 
