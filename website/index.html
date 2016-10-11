@@ -1,0 +1,293 @@
+<html>
+<head>
+
+    <title>Quick Adapter - by Ineat</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+        }
+
+        .header {
+            background-color: #FFF;
+            box-shadow: none;
+            height: 6em;
+            line-height: 6em;
+            color: #2F3241 !important;
+        }
+        
+        .header .brand-logo .title {
+            color: #2F3241 !important;
+            padding-left: 3em;
+        }
+        
+        .header .logo {
+            height:100%;
+            padding:0.5em;
+        }
+
+        .header ul a {
+            color: #2F3241;
+        }
+
+        .hangs {
+            background: #2F3241;
+            height: 100px;
+            height:9em;
+            color: #FFF;
+        }
+
+        .hangs p {
+            margin: auto;
+            font-size: 2em;
+            text-align:center;
+        }
+        
+        .hangs .italic {
+            font-style: italic;
+            font-weight: 600;
+        }
+        
+        .hangs .underline {
+            font-style: italic;
+            text-decoration: underline;
+        }
+
+        main h1, main h2 {
+            color: #E11F3C;
+        }
+        
+        main h1 {
+            font-size: 2em;
+        }
+        
+        main h2 {
+            font-size: 1.2em;
+            padding-left: 2em;
+        }
+        
+        main p {
+            font-weight: 300;
+            font-size: 1.1em;
+        }
+        
+        main pre {
+            background: #FFF;
+            border: 0.4em #F0F0F0 solid !important;
+            padding: 1em !important;
+        }
+        
+        main {
+            background-image: url("android.png");
+            background-position:0% 100%;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-size: auto;
+        }
+        
+        footer.page-footer {
+            background: #2F3241;
+            color: #FFF;
+            height:9em;
+            padding: 1em;
+            margin: 0 none;
+        }
+        
+        footer.page-footer a {
+            color: #FFF;
+            text-decoration: none;
+            position: relative;
+        }
+    
+        
+        footer.page-footer .animate-underline::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: #FFF;
+            visibility: hidden;
+            -webkit-transform: scaleX(0);
+            -o-transform: scaleX(0);
+            -moz-transform: scaleX(0);
+            transform: scaleX(0);
+            -webkit-transition: all 0.3s ease-in-out 0s;
+            -o-transition: all 0.3s ease-in-out 0s;
+            -moz-transition: all 0.3s ease-in-out 0s;
+            transition: all 0.3s ease-in-out 0s;
+        }
+        
+        footer.page-footer .animate-underline:hover:before {
+            visibility: visible;
+            -webkit-transform: scaleX(1);
+            -o-transform: scaleX(1);
+            -moz-transform: scaleX(1);
+            transform: scaleX(1);
+        }
+        
+        footer.page-footer .row .col {
+            text-align: center;
+        }
+        
+        footer.page-footer .row .col .logo {
+            width: 40px;
+        }
+        
+        footer.page-footer .by {
+            margin-right: 1em;
+        }
+
+    </style>
+</head>
+    <body>
+        <nav class="header">
+            <div class="nav-wrapper">
+                <div class="brand-logo left">
+                    <img class="logo" src="./logo_ineat.png"/>
+                </div>
+                <div class="brand-logo left">
+                    <span class="title">Quick Adapter</span>
+                </div>
+                
+                
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li>
+                        <a href="#quickitemrenderer">QuickItemRenderer</a>
+                    </li>
+                    <li>
+                        <a href="#quickadapter">QuickAdapter</a>
+                    </li>
+                    <li>
+                        <a href="#click-listener">Click Listener</a>
+                    </li>
+                    <li>
+                        <a href="#header-footer">Header / Footer</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="hangs valign-wrapper">
+            <p>One library to fill <span class="italic">quickly</span> your <span class="underline">RecyclerView</span></p>
+        </div>
+
+        <main>
+            <div class="container">
+                <h1 id="quickitemrenderer">1. QuickItemRenderer</h1>
+                <p>
+                    Create your RecyclerView items with QuickItemRenderer class.
+                    There are just two methods to override. <br/>
+                    The first method onCreate(View view) initialize the item with the view
+                    inflated.<br />
+                    The second method onBind(int position, T object) bind the view with your model.
+                </p>
+                <pre class="prettyprint">@QuickLayout(R.layout.item_my_model)
+public class ExampleQuickItemRenderer extends QuickItemRenderer&lt;MyModel&gt; {
+
+    private TextView mTextView;
+    
+    public ExampleQuickItemRenderer(View itemView) {
+        super(itemView);
+    }
+    
+    @Override
+    public void onCreate(View view) {
+        mTextView = (TextView) view.findViewById(R.id.txt_label);
+    }
+    
+    @Override
+    public void onBind(int position, MyModel myModel) {
+        mTextView.setText(myModel.getLabel());
+    }
+    
+}
+                </pre>
+                
+                <h1 id="quickadapter">2. QuickAdapter</h1>
+                <p>
+                    TODO
+                </p>
+                
+                <h2>2.1 SimpleQuickAdapter</h2>
+                <pre class="prettyprint">
+SimpleQuickAdapter&lt;Ineatien, IneatienQuickItemRenderer&gt; simpleQuickAdapter =
+new SimpleQuickAdapter&lt;&gt;(ineatienList, IneatienQuickItemRenderer.class);
+recyclerView.setAdapter(simpleQuickAdapter);
+                </pre>
+                <h2>2.2 SimpleQuickAdapter</h2>
+                <pre class="prettyprint">
+QuickAdapter&lt;Ineatien&gt; quickAdapter = new QuickAdapter&lt;&gt;(ineatienList);
+// register two item renderer
+quickAdapter.registerHolder(IneatienQuickItemRenderer.class);
+quickAdapter.registerHolder(NewIneatienQuickItemRenderer.class);
+// affect renderer from item at position
+quickAdapter.setQuickAdapterTypeFactory((position, ineatien) -> {
+    if (ineatien.isNew()) {
+        return NewIneatienQuickItemRenderer.class;
+    }
+    return IneatienQuickItemRenderer.class;
+});
+recyclerView.setAdapter(quickAdapter);
+                </pre>
+                
+                <h1 id="click-listener">3. Click Listener</h1>
+                <p>TODO</p>
+                <pre>
+// TODO            
+                </pre>
+
+                <h1 id="header-footer">3. Header / Footer</h1>
+                <p>TODO</p>
+                <pre>
+// TODO            
+                </pre>
+            </div>
+            
+            
+        </main>
+        <footer class="page-footer">
+            <div class="container">
+                <div class="row valign-wrapper">
+                    <div class="col l4 s12">
+                        <ul>
+                            <li><a class="animate-underline" href="https://github.com/ineat">Repositories</a></li>
+                            <li><a class="animate-underline" href="http://blog.ineat-conseil.fr/">Blog</a></li>
+                            <li><a class="animate-underline" href="http://ineat-group.com">Website</a></li>
+                        </ul>
+                    </div>
+                    <div class="col l4 s12 ">
+                        <a href="https://github.com/ineat/quick-adapter">
+                            <img class="logo" src="./github_white.png" />
+                        </a>
+                        <br />
+                        <a class="animate-underline" href="https://github.com/ineat/quick-adapter">QuickAdapter</a>
+                    </div>
+                    <div class="col l4 s12">
+                        <a class="animate-underline" href="http://ineat-group.com">
+                            <span class="by">by</span><img class="logo" src="./logo_ineat_white.png" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!--Import jQuery before materialize.js-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.min.js"></script>
+    </body>
+</html>
