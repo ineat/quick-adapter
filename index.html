@@ -193,6 +193,9 @@
                     <li>
                         <a href="#header-footer">Header / Footer</a>
                     </li>
+                    <li>
+                        <a href="#gradle">Gradle</a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -234,17 +237,16 @@ public class ExampleQuickItemRenderer extends QuickItemRenderer&lt;MyModel&gt; {
                 </pre>
                 
                 <h1 id="quickadapter">2. QuickAdapter</h1>
-                <p>
-                    TODO
-                </p>
-                
                 <h2>2.1 SimpleQuickAdapter</h2>
+                <p>Simple class for register only one type of QuickItemRenderer </p>
+                <p>The type is immutable</p>
                 <pre class="prettyprint">
 SimpleQuickAdapter&lt;Ineatien, IneatienQuickItemRenderer&gt; simpleQuickAdapter =
 new SimpleQuickAdapter&lt;&gt;(ineatienList, IneatienQuickItemRenderer.class);
 recyclerView.setAdapter(simpleQuickAdapter);
                 </pre>
-                <h2>2.2 SimpleQuickAdapter</h2>
+                <h2>2.2 QuickAdapter</h2>
+                <p>Simple class for register multi type of QuickItemRenderer</p>
                 <pre class="prettyprint">
 QuickAdapter&lt;Ineatien&gt; quickAdapter = new QuickAdapter&lt;&gt;(ineatienList);
 // register two item renderer
@@ -261,15 +263,27 @@ recyclerView.setAdapter(quickAdapter);
                 </pre>
                 
                 <h1 id="click-listener">3. Click Listener</h1>
-                <p>TODO</p>
-                <pre>
-// TODO            
+                <p>Register click listener on cells with setOnItemClickListener(...)</p>
+                <pre class="prettyprint">
+SimpleQuickAdapter&lt;Ineatien, IneatienQuickItemRenderer&gt; adapter = 
+    new SimpleQuickAdapter&lt;&gt;(values, IneatienQuickItemRenderer.class);
+adapter.setOnItemClickListener((rv, view, position, ineatien) -> {
+    Toast.makeText(context, ineatien.toString(), Toast.LENGTH_LONG).show();
+});
                 </pre>
 
                 <h1 id="header-footer">3. Header / Footer</h1>
                 <p>TODO</p>
-                <pre>
+                <pre class="prettyprint">
 // TODO            
+                </pre>
+                
+                <h1 id="gradle">4. Gradle</h1>
+                <p>TODO push to maven central not exist</p>
+                <pre class="prettyprint">
+dependencies {
+    compile 'com.ineat-group:quick-adapter:1.0.0'
+}         
                 </pre>
             </div>
             
