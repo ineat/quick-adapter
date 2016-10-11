@@ -1,5 +1,6 @@
 package com.ineat.quickadapter;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -49,12 +50,12 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
         mQuickAdapterTypeFactory = quickAdapterTypeFactory;
     }
 
-    public void setQuickAdapterTypeFactory(QuickAdapterTypeFactory<ITEM, QuickItemRenderer<ITEM>>
+    public final void setQuickAdapterTypeFactory(QuickAdapterTypeFactory<ITEM, QuickItemRenderer<ITEM>>
                                                    quickAdapterTypeFactory) {
         mQuickAdapterTypeFactory = quickAdapterTypeFactory;
     }
 
-    public void setOnItemClickListener(OnItemClickListener<ITEM> onItemClickListener) {
+    public final void setOnItemClickListener(OnItemClickListener<ITEM> onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
         attachListeners();
     }
@@ -69,7 +70,7 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
 
     // region register
 
-    public void registerHolder(Class<? extends QuickItemRenderer<ITEM>> holderClass) {
+    public final void registerHolder(Class<? extends QuickItemRenderer<ITEM>> holderClass) {
         if (!holderClass.isAnnotationPresent(QuickLayout.class)) {
             throw new IllegalArgumentException(holderClass + " is not annoted by " + QuickLayout
                     .class.getSimpleName());
@@ -79,14 +80,14 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
         registerType(getType(holderClass), holderClass);
     }
 
-    public void registerHeader(Class<? extends HeaderQuickItemRenderer> headerItemRenderer) {
+    public final void registerHeader(Class<? extends HeaderQuickItemRenderer> headerItemRenderer) {
         mHeaderItemRenderer = headerItemRenderer;
         if (mRecyclerView != null) {
             notifyDataSetChanged();
         }
     }
 
-    public void registerFooter(Class<? extends FooterQuickItemRenderer> footerItemRenderer) {
+    public final void registerFooter(Class<? extends FooterQuickItemRenderer> footerItemRenderer) {
         mFooterItemRenderer = footerItemRenderer;
         if (mRecyclerView != null) {
             notifyDataSetChanged();
@@ -163,13 +164,15 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
 
     // endregion items
 
+    @CallSuper
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public final void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mRecyclerView = recyclerView;
         attachListeners();
     }
 
+    @CallSuper
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
@@ -178,7 +181,7 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public final int getItemViewType(int position) {
         if (mQuickAdapterTypeFactory == null) {
             throw new IllegalArgumentException("QuickAdapterTypeFactory not exist, call method : " +
                     "setQuickAdapterTypeFactory(...)");
@@ -200,7 +203,7 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
     }
 
     @Override
-    public QuickItemRenderer onCreateViewHolder(ViewGroup parent, int viewType) {
+    public final QuickItemRenderer onCreateViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         Class<? extends QuickItemRenderer> holderClass;
 
@@ -254,7 +257,7 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onBindViewHolder(QuickItemRenderer holder, int position) {
+    public final void onBindViewHolder(QuickItemRenderer holder, int position) {
         if (holder instanceof HeaderFooterQuickItemRenderer) {
             ((HeaderFooterQuickItemRenderer) holder).onBind();
         } else {
@@ -264,7 +267,7 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
     }
 
     @Override
-    public int getItemCount() {
+    public final int getItemCount() {
         return mItems.size() + getHeaderFooterSize();
     }
 
