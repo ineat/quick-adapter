@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.ineat.quickadapter.QuickAdapter;
 import com.ineat.quickadapter.SimpleQuickAdapter;
@@ -31,9 +33,15 @@ public class MainActivity extends AppCompatActivity {
         final List<Ineatien> ineatienList = Arrays.asList(Provider.INEATIENS);
         SimpleQuickAdapter<Ineatien, IneatienQuickItemRenderer> simpleQuickAdapter =
                 new SimpleQuickAdapter<>(ineatienList, IneatienQuickItemRenderer.class);
-
         recyclerView.setAdapter(simpleQuickAdapter);
+        simpleQuickAdapter.setOnItemClickListener((rv, view, position, ineatien) -> {
+            Toast.makeText(MainActivity.this, ineatien.toString(), Toast.LENGTH_LONG).show();
+        });
 
+
+        /*
+
+        Mode multi cell
 
         QuickAdapter<Ineatien> quickAdapter = new QuickAdapter<>(ineatienList);
         quickAdapter.registerHolder(IneatienQuickItemRenderer.class);
@@ -47,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         recyclerView.setAdapter(quickAdapter);
+
+        */
     }
     //endregion android lifecycle
 

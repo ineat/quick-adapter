@@ -7,6 +7,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,9 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer<I
     private QuickAdapterTypeFactory<ITEM, QuickItemRenderer<ITEM>> mQuickAdapterTypeFactory;
     private List<ITEM> mItems;
     private boolean mAutoNotify;
+    private RecyclerView mRecyclerView;
+    private OnItemClickListener<ITEM> mOnItemClickListener;
+    private RecyclerView.OnChildAttachStateChangeListener mOnChildAttachStateChangeListener;
 
     public QuickAdapter() {
         mViewTypeSparseArray = new SparseArray<>();
@@ -43,6 +47,25 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer<I
     public void setQuickAdapterTypeFactory(QuickAdapterTypeFactory<ITEM, QuickItemRenderer<ITEM>>
                                                    quickAdapterTypeFactory) {
         mQuickAdapterTypeFactory = quickAdapterTypeFactory;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener<ITEM> onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+        attachListeners();
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
+        attachListeners();
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        detachListeners();
+        mRecyclerView = null;
     }
 
     @Override
@@ -181,6 +204,46 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer<I
         return mItems.size();
     }
 
+    private void detachListeners() {
+        if (mRecyclerView == null || mOnChildAttachStateChangeListener == null) {
+            return;
+        }
+        mRecyclerView.removeOnChildAttachStateChangeListener(mOnChildAttachStateChangeListener);
+    }
+
+    private void attachListeners() {
+        if (mRecyclerView == null || mOnItemClickListener == null) {
+            return;
+        }
+
+        if (mOnChildAttachStateChangeListener == null) {
+            mOnChildAttachStateChangeListener = new RecyclerView.OnChildAttachStateChangeListener() {
+                @Override
+                public void onChildViewAttachedToWindow(final View view) {
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int position = mRecyclerView.getChildAdapterPosition(v);
+                            mOnItemClickListener.onItemClick(mRecyclerView, v, position,
+                                    getItemAtPosition(position));
+                        }
+                    });
+                }
+
+                @Override
+                public void onChildViewDetachedFromWindow(View view) {
+                    if (view == null) {
+                        return;
+                    }
+                    view.setOnClickListener(null);
+                }
+            };
+            mRecyclerView.addOnChildAttachStateChangeListener(mOnChildAttachStateChangeListener);
+        }
+
+
+    }
+
     private void registerType(int type, Class<? extends QuickItemRenderer<ITEM>> holderClass) {
         mViewTypeSparseArray.put(type, holderClass);
         if (mAutoNotify) {
@@ -192,9 +255,13 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer<I
         return holderClass.getName().hashCode();
     }
 
-
     public interface QuickAdapterTypeFactory<ITEM, HOLDER> {
         Class<? extends HOLDER> getType(int position, ITEM item);
+    }
+
+
+    public interface OnItemClickListener<ITEM> {
+        void onItemClick(RecyclerView recyclerView, View view, int position, ITEM item);
     }
 
 }
