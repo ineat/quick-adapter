@@ -20,13 +20,10 @@ public class NewIneatienQuickItemRenderer extends QuickItemRenderer<Ineatien> {
 
     public NewIneatienQuickItemRenderer(View itemView) {
         super(itemView);
+        mFirstnameTextView = (TextView) itemView.findViewById(R.id.text_firstname);
+        mLastnameTextView = (TextView) itemView.findViewById(R.id.text_lastname);
     }
 
-    @Override
-    public void onCreate(View view) {
-        mFirstnameTextView = (TextView) view.findViewById(R.id.text_firstname);
-        mLastnameTextView = (TextView) view.findViewById(R.id.text_lastname);
-    }
 
     @Override
     public void onBind(int position, @NonNull Ineatien ineatien) {

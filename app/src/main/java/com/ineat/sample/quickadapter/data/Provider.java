@@ -13,7 +13,7 @@ public class Provider {
             new Ineatien("Johann", "Vandromme"),
             new Ineatien("Boris", "Sauvage", true),
             new Ineatien("Quentin", "Vouters"),
-            new Ineatien("Aurélien", "Van laer"),
+            new Ineatien("Aurélien", "Van laer")
     };
 
 }

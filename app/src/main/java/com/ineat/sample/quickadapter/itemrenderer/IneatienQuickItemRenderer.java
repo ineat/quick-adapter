@@ -20,12 +20,8 @@ public class IneatienQuickItemRenderer extends QuickItemRenderer<Ineatien> {
 
     public IneatienQuickItemRenderer(View itemView) {
         super(itemView);
-    }
-
-    @Override
-    public void onCreate(View view) {
-        mFirstnameTextView = (TextView) view.findViewById(R.id.text_firstname);
-        mLastnameTextView = (TextView) view.findViewById(R.id.text_lastname);
+        mFirstnameTextView = (TextView) itemView.findViewById(R.id.text_firstname);
+        mLastnameTextView = (TextView) itemView.findViewById(R.id.text_lastname);
     }
 
     @Override

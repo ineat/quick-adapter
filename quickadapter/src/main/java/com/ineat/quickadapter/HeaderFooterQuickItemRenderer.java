@@ -4,10 +4,10 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 /**
- * Created by Mehdi on 11/10/2016.
+ * Created by mslimani on 11/10/2016.
  */
 
-public abstract class HeaderFooterQuickItemRenderer extends QuickItemRenderer<Void> {
+abstract class HeaderFooterQuickItemRenderer extends QuickItemRenderer<Void> {
 
     public HeaderFooterQuickItemRenderer(View itemView) {
         super(itemView);
@@ -15,9 +15,19 @@ public abstract class HeaderFooterQuickItemRenderer extends QuickItemRenderer<Vo
 
     @Override
     public final void onBind(int position, @NonNull Void aVoid) {
-        onBind();
+        throw new OnBindIllegalAccessException();
     }
 
     protected abstract void onBind();
+
+    private static class OnBindIllegalAccessException extends RuntimeException {
+
+        OnBindIllegalAccessException() {
+            super("Method onBind not accessible in " +
+                    HeaderFooterQuickItemRenderer.class.getName());
+        }
+
+    }
+
 
 }
