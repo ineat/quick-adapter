@@ -238,8 +238,7 @@ public class ExampleQuickItemRenderer extends QuickItemRenderer&lt;MyModel&gt; {
                 
                 <h1 id="quickadapter">2. QuickAdapter</h1>
                 <h2>2.1 SimpleQuickAdapter</h2>
-                <p>Simple class for register only one type of QuickItemRenderer </p>
-                <p>The type is immutable</p>
+                <p>Simple class for register only one type of QuickItemRenderer.</p>
                 <pre class="prettyprint">
 SimpleQuickAdapter&lt;Ineatien, IneatienQuickItemRenderer&gt; simpleQuickAdapter =
 new SimpleQuickAdapter&lt;&gt;(ineatienList, IneatienQuickItemRenderer.class);
@@ -273,9 +272,25 @@ adapter.setOnItemClickListener((rv, view, position, ineatien) -> {
                 </pre>
 
                 <h1 id="header-footer">3. Header / Footer</h1>
-                <p>TODO</p>
-                <pre class="prettyprint">
-// TODO            
+                <p>It's possible to affect one header and footer into adapter. Two implementation is available HeaderQuickItemRenderer and FooterQuickItemRenderer. In these classes the method onBind has not parameter.</p>
+                <pre class="prettyprint">// MyHeaderItemRenderer.java
+@QuickLayout(R.layout.item_header)
+public class MyHeaderItemRenderer extends HeaderQuickItemRenderer {
+
+    public HeaderIneatItemRenderer(View itemView) {
+        super(itemView);
+    }
+
+    @Override
+    protected void onBind() {
+        // ...
+    }
+}
+
+// MainActivity.java
+QuickAdapter<Model> adapter = new QuickAdapter<>(list);
+quickAdapter.registerHeader(MyHeaderItemRenderer.class);
+quickAdapter.registerFooter(MyFooterItemRenderer.class);
                 </pre>
                 
                 <h1 id="gradle">4. Gradle</h1>
