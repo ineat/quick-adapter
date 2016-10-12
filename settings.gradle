@@ -1,1 +1,4 @@
-include ':app', ':quickadapter'
+include ':quickadapter-sample'
+include ':quickadapter'
+
+rootProject.name = 'quickadapter-parent'

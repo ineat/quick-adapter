@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
 
+group = GROUP
+version = VERSION_NAME
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
@@ -31,3 +34,5 @@ dependencies {
 
     compile 'com.android.support:recyclerview-v7:24.2.1'
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
