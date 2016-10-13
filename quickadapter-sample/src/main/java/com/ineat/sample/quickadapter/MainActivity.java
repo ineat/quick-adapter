@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
 
 import com.ineat.quickadapter.FooterQuickItemRenderer;
 import com.ineat.quickadapter.QuickAdapter;
@@ -51,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
         //Mode multi cell
 
         QuickAdapter<Ineatien> quickAdapter = new QuickAdapter<>(ineatienList);
-        quickAdapter.registerHolder(IneatienQuickItemRenderer.class);
-        quickAdapter.registerHolder(NewIneatienQuickItemRenderer.class);
+        quickAdapter.registerItemRenderer(IneatienQuickItemRenderer.class);
+        quickAdapter.registerItemRenderer(NewIneatienQuickItemRenderer.class);
         quickAdapter.setQuickAdapterTypeFactory((position, ineatien) -> {
             if (ineatien.isNew()) {
                 return NewIneatienQuickItemRenderer.class;
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         quickAdapter.registerHeader(HeaderIneatItemRenderer.class);
         quickAdapter.registerFooter(FooterIneatItemRenderer2.class);
         recyclerView.setAdapter(quickAdapter);
-
 
     }
     //endregion android lifecycle

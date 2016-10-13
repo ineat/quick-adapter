@@ -19,7 +19,7 @@ public final class SimpleQuickAdapter<ITEM, HOLDER extends QuickItemRenderer<ITE
     }
 
     private void initSingleHolder(final Class<HOLDER> holderClass) {
-        registerHolder(holderClass);
+        registerItemRenderer(holderClass);
         setQuickAdapterTypeFactory(new QuickAdapterTypeFactory<ITEM, QuickItemRenderer<ITEM>>() {
             @Override
             public Class<? extends QuickItemRenderer<ITEM>> getType(int position, ITEM item) {

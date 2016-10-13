@@ -3,12 +3,15 @@ package com.ineat.quickadapter;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+
+import com.ineat.quickadapter.exceptions.IllegalRegisterItemRendererException;
+import com.ineat.quickadapter.exceptions.NotAccessItemRendererException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -21,7 +24,8 @@ import java.util.List;
  */
 public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> {
 
-    private final SparseArray<Class<? extends QuickItemRenderer<ITEM>>> mViewTypeSparseArray;
+    private final SparseArray<Class<? extends QuickItemRenderer<ITEM>>>
+            mRegisterItemRendererSparseArray;
     // used for trace exception
     private final SparseArray<Class<? extends QuickItemRenderer<ITEM>>> mCacheHashClassSparseArray;
     private QuickAdapterTypeFactory<ITEM, QuickItemRenderer<ITEM>> mQuickAdapterTypeFactory;
@@ -34,7 +38,7 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
     private Class<? extends FooterQuickItemRenderer> mFooterItemRenderer;
 
     public QuickAdapter() {
-        mViewTypeSparseArray = new SparseArray<>();
+        mRegisterItemRendererSparseArray = new SparseArray<>();
         mCacheHashClassSparseArray = new SparseArray<>();
         mItems = new ArrayList<>();
     }
@@ -68,35 +72,47 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
         mAutoNotify = autoNotify;
     }
 
-    // region register
-
-    public final void registerHolder(Class<? extends QuickItemRenderer<ITEM>> holderClass) {
-        if (!holderClass.isAnnotationPresent(QuickLayout.class)) {
-            throw new IllegalArgumentException(holderClass + " is not annoted by " + QuickLayout
-                    .class.getSimpleName());
+    public final void registerItemRenderer(Class<? extends QuickItemRenderer<ITEM>> rendererClass) {
+        if (rendererClass == null) {
+            throw new IllegalRegisterItemRendererException("QuickItemRenderer cannot be null");
         }
 
-        final QuickLayout quickLayout = holderClass.getAnnotation(QuickLayout.class);
-        registerType(getType(holderClass), holderClass);
+        checkQuickLayout(rendererClass);
+
+        registerType(getType(rendererClass), rendererClass);
     }
+
+    // region register
 
     public final void registerHeader(Class<? extends HeaderQuickItemRenderer> headerItemRenderer) {
         mHeaderItemRenderer = headerItemRenderer;
+        checkQuickLayout(mHeaderItemRenderer);
         if (mRecyclerView != null) {
             notifyDataSetChanged();
+        }
+    }
+
+    public final void unregisterHeader() {
+        mHeaderItemRenderer = null;
+        if (mRecyclerView != null) {
+            notifyItemRemoved(0);
+        }
+    }
+
+    public final void unregisterFooter() {
+        mFooterItemRenderer = null;
+        if (mRecyclerView != null) {
+            notifyItemRemoved(getItemCount() - 1);
         }
     }
 
     public final void registerFooter(Class<? extends FooterQuickItemRenderer> footerItemRenderer) {
         mFooterItemRenderer = footerItemRenderer;
+        checkQuickLayout(mFooterItemRenderer);
         if (mRecyclerView != null) {
             notifyDataSetChanged();
         }
     }
-
-    // endregion register
-
-    // region items
 
     public ITEM getItemAtPosition(int position) {
         final int count = getItemCount();
@@ -112,6 +128,10 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
             notifyDataSetChanged();
         }
     }
+
+    // endregion register
+
+    // region items
 
     public void addItem(@NonNull ITEM item) {
         int position = getItemCount();
@@ -162,8 +182,6 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
         }
     }
 
-    // endregion items
-
     @CallSuper
     @Override
     public final void onAttachedToRecyclerView(RecyclerView recyclerView) {
@@ -180,10 +198,12 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
         mRecyclerView = null;
     }
 
+    // endregion items
+
     @Override
     public final int getItemViewType(int position) {
         if (mQuickAdapterTypeFactory == null) {
-            throw new IllegalArgumentException("QuickAdapterTypeFactory not exist, call method : " +
+            throw new IllegalRegisterItemRendererException("QuickAdapterTypeFactory not exist, call method : " +
                     "setQuickAdapterTypeFactory(...)");
         }
 
@@ -216,11 +236,11 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
             holderClass = mFooterItemRenderer;
         } else {
             // is content
-            holderClass = mViewTypeSparseArray.get(viewType);
+            holderClass = mRegisterItemRendererSparseArray.get(viewType);
         }
 
         if (holderClass == null) {
-            throw new IllegalArgumentException(mCacheHashClassSparseArray.get(viewType)
+            throw new IllegalRegisterItemRendererException(mCacheHashClassSparseArray.get(viewType)
                     .getSimpleName() + " is not registered");
         }
 
@@ -244,11 +264,11 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
             boolean isInner = holderClass.getEnclosingClass() != null;
             if (isInner && !isStatic) {
                 // declare class to [modifier] static class { ...
-                throw new IllegalArgumentException(holderClass.getSimpleName() + " is an inner " +
+                throw new NotAccessItemRendererException(holderClass.getSimpleName() + " is an inner " +
                         "class and is not static.");
             }
 
-            throw new IllegalArgumentException(holderClass.getSimpleName() + " doit être " +
+            throw new NotAccessItemRendererException(holderClass.getSimpleName() + " doit être " +
                     "accessible ainsi qu'un seul constructeur public avec un seul paramètre " +
                     "Holder(android.view.View view)");
         }
@@ -269,6 +289,22 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
     @Override
     public final int getItemCount() {
         return mItems.size() + getHeaderFooterSize();
+    }
+
+    @VisibleForTesting
+    final SparseArray<Class<? extends QuickItemRenderer<ITEM>>> getRegisterItemRendererSparseArray() {
+        return mRegisterItemRendererSparseArray;
+    }
+
+    private void checkQuickLayout(Class<?> rendererClass) {
+        if (!rendererClass.isAnnotationPresent(QuickLayout.class)) {
+            Class<?> superclass = rendererClass.getSuperclass();
+            if (superclass == null) {
+                throw new IllegalRegisterItemRendererException(rendererClass + " is not annoted by " + QuickLayout
+                        .class.getSimpleName());
+            }
+            checkQuickLayout(superclass);
+        }
     }
 
     private int getContentPosition(int position) {
@@ -340,13 +376,14 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
     }
 
     private void registerType(int type, Class<? extends QuickItemRenderer<ITEM>> holderClass) {
-        mViewTypeSparseArray.put(type, holderClass);
+        mRegisterItemRendererSparseArray.put(type, holderClass);
         if (mAutoNotify) {
             notifyDataSetChanged();
         }
     }
 
-    private int getType(Class<? extends IQuickItemRenderer<?>> holderClass) {
+    @VisibleForTesting
+    final int getType(Class<? extends IQuickItemRenderer<?>> holderClass) {
         return holderClass.getName().hashCode();
     }
 

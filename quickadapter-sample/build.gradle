@@ -37,6 +37,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
 
-    // compile project(':quickadapter')
-    compile 'com.ineat-group:quick-adapter:1.0.0-SNAPSHOT'
+    compile project(':quickadapter')
 }
