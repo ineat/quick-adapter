@@ -3,7 +3,7 @@ Quick Adapter
 
 [![Logo](website/logo_ineat_small.png)][1]
 
-One library to fill quickly your RecyclerView and remove boilerplate code adapter.
+One library to quickly fill your RecyclerView and remove boilerplate code adapter.
 
 # Simple Adapter : Simple cell
 
