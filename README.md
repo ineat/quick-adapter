@@ -9,7 +9,7 @@ One library to fill quickly your RecyclerView and remove boilerplate code adapte
 
 ```java
 @QuickLayout(R.layout.item_example)
-public class ExampleQuickItemRenderer extends QuickItemRenderer&lt;MyModel&gt; {
+public class ExampleQuickItemRenderer extends QuickItemRenderer<MyModel> {
 
     private TextView mTextView;
 
@@ -25,8 +25,8 @@ public class ExampleQuickItemRenderer extends QuickItemRenderer&lt;MyModel&gt; {
 
 }
 
-SimpleQuickAdapter&lt;Ineatien, ExampleQuickItemRenderer&gt; adapter =
-    new SimpleQuickAdapter&lt;&gt;(values, ExampleQuickItemRenderer.class);
+SimpleQuickAdapter<Ineatien, ExampleQuickItemRenderer> adapter =
+    new SimpleQuickAdapter<>(values, ExampleQuickItemRenderer.class);
 mRecyclerView.setAdapter(adapter);
 
 ```
@@ -35,7 +35,7 @@ mRecyclerView.setAdapter(adapter);
 
 ```java
 @QuickLayout(R.layout.item_cell_one)
-public class CellOneQuickItemRenderer extends QuickItemRenderer&lt;MyModel&gt; {
+public class CellOneQuickItemRenderer extends QuickItemRenderer<MyModel> {
 
     private TextView mTextView;
 
@@ -52,7 +52,7 @@ public class CellOneQuickItemRenderer extends QuickItemRenderer&lt;MyModel&gt; {
 }
 
 @QuickLayout(R.layout.item_cell_two)
-public class CellTwoQuickItemRenderer extends QuickItemRenderer&lt;MyModel&gt; {
+public class CellTwoQuickItemRenderer extends QuickItemRenderer<MyModel> {
 
     private TextView mTextView;
 
@@ -68,7 +68,7 @@ public class CellTwoQuickItemRenderer extends QuickItemRenderer&lt;MyModel&gt; {
 
 }
 
-QuickAdapter&lt;Ineatien&gt; adapter = new QuickAdapter&lt;&gt;(ineatienList);
+QuickAdapter<Ineatien> adapter = new QuickAdapter<>(ineatienList);
 adapter.registerItemRenderer(CellOneQuickItemRenderer.class);
 adapter.registerItemRenderer(CellTwoQuickItemRenderer.class);
 adapter.setQuickAdapterTypeFactory((position, ineatien) -> {
