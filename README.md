@@ -1,7 +1,7 @@
 Quick Adapter
 ============
 
-[![Logo](website/logo_ineat.png)][1]
+by : [![Logo](website/logo_ineat.png){:height="88px" width="79px"}.][1]
 
 One library to fill quickly your RecyclerView and remove boilerplate code adapter.
 
@@ -91,7 +91,7 @@ Configure your `build.gradle`:
 
 ```groovy
 dependencies {
-    compile 'com.ineat-group:quick-adapter:1.0.0'
+    compile 'com.ineat-group:quick-adapter:1.0.1'
 }
 ```
 
