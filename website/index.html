@@ -220,8 +220,10 @@
             <div class="container">
                 <h1 id="quickitemrenderer">1. QuickItemRenderer</h1>
                 <p>
-                    Create your RecyclerView items with QuickItemRenderer class.
-                    There are just one method to override <span class="lato-italic">onBind(int position T object)</span>. This method bind the view with your model at a position in the list.
+                    Create your RecyclerView items using QuickItemRenderer class. There is just
+                    one method to override <span class="lato-italic">onBind(int position T
+                    object)</span>.
+                    This method binds the view with your model at a position inthe list.
                 </p>
                 <pre class="prettyprint">@QuickLayout(R.layout.item_my_model)
 public class ExampleQuickItemRenderer extends QuickItemRenderer&lt;MyModel&gt; {
@@ -230,11 +232,7 @@ public class ExampleQuickItemRenderer extends QuickItemRenderer&lt;MyModel&gt; {
     
     public ExampleQuickItemRenderer(View itemView) {
         super(itemView);
-    }
-    
-    @Override
-    public void onCreate(View view) {
-        mTextView = (TextView) view.findViewById(R.id.txt_label);
+        mTextView = (TextView) itemView.findViewById(R.id.txt_label);
     }
     
     @Override
@@ -247,14 +245,23 @@ public class ExampleQuickItemRenderer extends QuickItemRenderer&lt;MyModel&gt; {
                 
                 <h1 id="quickadapter">2. QuickAdapter</h1>
                 <h2>2.1 SimpleQuickAdapter</h2>
-                <p>Simple class for register one <span class="lato-italic">QuickItemRenderer</span> into quick adapter. SimpleQuickAdapter extends of <a class="smoothScroll" href="#quickadapter-quickadapter">QuickAdapter</a></p>
+                <p>Simple class to register a <span class="lato-italic">QuickItemRenderer</span>
+                    into a quick adapter. SimpleQuickAdapter extends
+                    <a class="smoothScroll" href="#quickadapter-quickadapter">QuickAdapter</a>
+                </p>
                 <pre class="prettyprint">
 SimpleQuickAdapter&lt;Ineatien, IneatienQuickItemRenderer&gt; simpleQuickAdapter =
 new SimpleQuickAdapter&lt;&gt;(ineatienList, IneatienQuickItemRenderer.class);
 recyclerView.setAdapter(simpleQuickAdapter);
                 </pre>
                 <h2 id="quickadapter-quickadapter">2.2 QuickAdapter</h2>
-                <p>Simple class for register multi type of QuickItemRenderer. All classes must be pre-registered. Then to fill a cell using <span class="lato-italic">setQuickAdapterTypeFactory</span>. The parameter is an listener for selecting type QuickItemRenderer at a position.</p>
+                <p>
+                    Simple class to register multi types of <span
+                        class="lato-italic">QuickItemRenderer</span> within the same adapter.
+                    Each type's class must be pre-registered.
+                    Then fill a cell using <span class="lato-italic">setQuickAdapterTypeFactory</span>.
+                    The parameter is a listener letting you implement the logic to select the correct type of QuickItemRenderer at a position.
+                </p>
                 <pre class="prettyprint">
 QuickAdapter&lt;Ineatien&gt; quickAdapter = new QuickAdapter&lt;&gt;(ineatienList);
 // register two item renderer
@@ -281,7 +288,11 @@ adapter.setOnItemClickListener((rv, view, position, ineatien) -> {
                 </pre>
 
                 <h1 id="header-footer">3. Header / Footer</h1>
-                <p>It's possible to affect one header and footer into adapter. Two implementation is available <span class="lato-italic">HeaderQuickItemRenderer</span> and <span class="lato-italic">FooterQuickItemRenderer</span>. In these classes the method onBind has not parameter.</p>
+                <p>
+                    It's possible to affect one header and footer into an adapter.
+                    Two implementations are available <span class="lato-italic">HeaderQuickItemRenderer</span> and <span class="lato-italic">FooterQuickItemRenderer</span>.
+                    In these classes the method onBind has not parameter.
+                </p>
                 <pre class="prettyprint">// MyHeaderItemRenderer.java
 @QuickLayout(R.layout.item_header)
 public class MyHeaderItemRenderer extends HeaderQuickItemRenderer {
