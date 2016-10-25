@@ -44,11 +44,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, ineatien.toString(), Toast.LENGTH_LONG).show();
         });*/
 
-        A a = new A();
-
-
-
-
         //Mode multi cell
 
         QuickAdapter<Ineatien> quickAdapter = new QuickAdapter<>(ineatienList);
