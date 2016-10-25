@@ -1,7 +1,7 @@
 Quick Adapter
 ============
 
-by : [![Logo](website/logo_ineat.png){:height="88px" width="79px"}.][1]
+[![Logo](website/logo_ineat_small.png)][1]
 
 One library to fill quickly your RecyclerView and remove boilerplate code adapter.
 
