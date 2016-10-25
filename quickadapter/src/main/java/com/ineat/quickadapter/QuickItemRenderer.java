@@ -16,12 +16,7 @@ public abstract class QuickItemRenderer<ITEM> extends RecyclerView.ViewHolder im
 
     @Override
     public final Context getContext() {
-        final View view = super.itemView;
-        if (view == null) {
-            return null;
-        }
-
-        return view.getContext();
+        return super.itemView.getContext();
     }
 
 }

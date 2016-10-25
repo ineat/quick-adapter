@@ -64,6 +64,10 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
         attachListeners();
     }
 
+    QuickAdapterTypeFactory<ITEM, QuickItemRenderer<ITEM>> getQuickAdapterTypeFactory() {
+        return mQuickAdapterTypeFactory;
+    }
+
     public boolean isAutoNotify() {
         return mAutoNotify;
     }
@@ -288,7 +292,7 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
 
     @Override
     public final int getItemCount() {
-        return mItems.size() + getHeaderFooterSize();
+        return (mItems == null ? 0 : mItems.size()) + getHeaderFooterSize();
     }
 
     @VisibleForTesting

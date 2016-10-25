@@ -14,13 +14,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by mslimani on 12/10/2016.
+ * run test
+ * <pre>
+ *     ./gradlew clean createDebugCoverageReport jacocoTestReport
+ * </pre>
  */
 @RunWith(AndroidJUnit4.class)
 public class QuickAdapterTest {
@@ -33,6 +41,8 @@ public class QuickAdapterTest {
         mAdapter = new QuickAdapter<>(ITEMS);
     }
 
+    // region illegal register
+
     @Test(expected = IllegalRegisterItemRendererException.class)
     public void testRegisterItemRenderer_withNullObject() {
         mAdapter.registerItemRenderer(null);
@@ -42,6 +52,25 @@ public class QuickAdapterTest {
     public void testRegisterItemRenderer_withoutQuickLayoutAnnotation() {
         mAdapter.registerItemRenderer(NotAnnotationQuickItemRenderer.class);
     }
+
+    @Test(expected = IllegalRegisterItemRendererException.class)
+    public void testRegisterHeader_withoutAnnotation(){
+        mAdapter.registerHeader(HeaderWithoutAnnotationQuickItemRenderer.class);
+    }
+
+    @Test(expected = IllegalRegisterItemRendererException.class)
+    public void testRegisterFooter_withoutAnnotation(){
+        mAdapter.registerFooter(FooterWithoutAnnotationQuickItemRenderer.class);
+    }
+
+    @Test(expected = IllegalRegisterItemRendererException.class)
+    public void testGetItemViewType_withoutRegister() {
+        mAdapter.getItemViewType(0);
+    }
+
+    // endregion illegal register
+
+    // region valid register
 
     @Test
     public void testRegisterItemRenderer_withValidRenderer() {
@@ -56,20 +85,11 @@ public class QuickAdapterTest {
         assertEquals(2, mAdapter.getRegisterItemRendererSparseArray().size());
     }
 
-    @Test(expected = IllegalRegisterItemRendererException.class)
-    public void testRegisterHeader_withoutAnnotation(){
-        mAdapter.registerHeader(HeaderWithoutAnnotationQuickItemRenderer.class);
-    }
 
-    @Test(expected = IllegalRegisterItemRendererException.class)
-    public void testRegisterFooter_withoutAnnotation(){
-        mAdapter.registerFooter(FooterWithoutAnnotationQuickItemRenderer.class);
-    }
 
     @Test
     public void testRegisterUnregisterHeaderFooter_withAnnotation() {
         assertEquals(ITEMS.size(), mAdapter.getItemCount());
-
         // register
         mAdapter.registerHeader(HeaderWithAnnotationQuickItemRenderer.class);
         assertEquals(ITEMS.size() + 1, mAdapter.getItemCount());
@@ -81,6 +101,10 @@ public class QuickAdapterTest {
         assertEquals(ITEMS.size(), mAdapter.getItemCount());
     }
 
+    // endregion valid register
+
+    // region item view type
+
     @Test
     public void testGetType() {
         mAdapter.registerItemRenderer(ATestQuickItemRenderer.class);
@@ -89,12 +113,6 @@ public class QuickAdapterTest {
         int typeB = BTestQuickItemRenderer.class.getName().hashCode();
         assertEquals(typeA, mAdapter.getType(ATestQuickItemRenderer.class));
         assertEquals(typeB, mAdapter.getType(BTestQuickItemRenderer.class));
-    }
-
-
-    @Test(expected = IllegalRegisterItemRendererException.class)
-    public void testGetItemViewType_withoutRegister() {
-        mAdapter.getItemViewType(0);
     }
 
     @Test
@@ -135,6 +153,10 @@ public class QuickAdapterTest {
         mAdapter.onCreateViewHolder(itemContainer, mAdapter.getItemViewType(0));
     }
 
+    // endregion item view type
+
+    // region holder
+
     @Test(expected = IllegalRegisterItemRendererException.class)
     public void testOnCreateViewHolder() {
         mAdapter.onCreateViewHolder(null, mAdapter.getItemViewType(0));
@@ -167,6 +189,76 @@ public class QuickAdapterTest {
             assertEquals(ATestQuickItemRenderer.class, itemRenderer.getClass());
         }
     }
+
+    // endregion holder
+
+    // region items
+
+    @Test
+    public void testSetItems() {
+        mAdapter.setItems(Collections.<String>emptyList());
+        assertEquals(0, mAdapter.getItemCount());
+        mAdapter.setItems(null);
+        assertEquals(0, mAdapter.getItemCount());
+        mAdapter.setItems(ITEMS);
+        assertEquals(ITEMS.size(), mAdapter.getItemCount());
+    }
+
+    @Test
+    public void testAddItem() {
+        final String newItem = "New Item";
+        mAdapter.setItems(new ArrayList<>(ITEMS));
+        mAdapter.addItem(newItem);
+        assertEquals(newItem, mAdapter.getItemAtPosition(mAdapter.getItemCount() - 1));
+
+        final String newFirstItem = "First !!";
+        mAdapter.addItem(0, newFirstItem);
+        assertEquals(newFirstItem, mAdapter.getItemAtPosition(0));
+
+        final String newMiddleItem = "Middle";
+        mAdapter.addItem(2, newMiddleItem);
+        assertEquals(newMiddleItem, mAdapter.getItemAtPosition(2));
+
+        mAdapter.removeItems();
+        mAdapter.addItems(ITEMS);
+        assertEquals(ITEMS.size(), mAdapter.getItemCount());
+    }
+
+    @Test
+    public void testRemoveItem() {
+        mAdapter.setItems(new ArrayList<>(ITEMS));
+        mAdapter.removeItem(0);
+        assertEquals(ITEMS.get(1), mAdapter.getItemAtPosition(0));
+    }
+
+    @Test
+    public void testRemoveItems() {
+        // Arrays.asList cannot call clear()
+        mAdapter.setItems(new ArrayList<>(ITEMS));
+        assertEquals(ITEMS.size(), mAdapter.getItemCount());
+
+        mAdapter.removeItems();
+        assertEquals(0, mAdapter.getItemCount());
+
+        mAdapter.removeItems();
+        assertEquals(0, mAdapter.getItemCount());
+    }
+
+    @Test
+    public void testSwap() {
+        mAdapter.setItems(new ArrayList<>(ITEMS));
+        assertEquals(ITEMS.get(0), mAdapter.getItemAtPosition(0));
+        assertEquals(ITEMS.get(1), mAdapter.getItemAtPosition(1));
+        mAdapter.swap(0, 1);
+        assertEquals(ITEMS.get(0), mAdapter.getItemAtPosition(1));
+        assertEquals(ITEMS.get(1), mAdapter.getItemAtPosition(0));
+    }
+
+
+
+    // endregion items
+
+    // region inner renderer
 
     private static class NotAnnotationQuickItemRenderer extends QuickItemRenderer<String> {
 
@@ -266,6 +358,16 @@ public class QuickAdapterTest {
         public void onBind(int position, @NonNull String s) {
             // do nothing
         }
+    }
+
+    // endregion inner renderer
+
+    @Test
+    public void testIsAutoNotify() {
+        mAdapter.setAutoNotify(true);
+        assertTrue(mAdapter.isAutoNotify());
+        mAdapter.setAutoNotify(false);
+        assertFalse(mAdapter.isAutoNotify());
     }
 
 }

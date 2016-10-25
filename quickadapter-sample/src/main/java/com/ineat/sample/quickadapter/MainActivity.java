@@ -10,6 +10,7 @@ import com.ineat.quickadapter.FooterQuickItemRenderer;
 import com.ineat.quickadapter.QuickAdapter;
 import com.ineat.quickadapter.QuickLayout;
 import com.ineat.quickadapter.SimpleQuickAdapter;
+import com.ineat.quickadapter.internal.A;
 import com.ineat.quickadapter.sample.R;
 import com.ineat.sample.quickadapter.data.Provider;
 import com.ineat.sample.quickadapter.itemrenderer.FooterIneatItemRenderer;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, ineatien.toString(), Toast.LENGTH_LONG).show();
         });*/
 
+        A a = new A();
 
 
 

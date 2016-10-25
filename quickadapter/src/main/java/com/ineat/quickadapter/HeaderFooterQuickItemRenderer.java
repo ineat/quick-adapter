@@ -20,7 +20,7 @@ abstract class HeaderFooterQuickItemRenderer extends QuickItemRenderer<Void> {
 
     protected abstract void onBind();
 
-    private static class OnBindIllegalAccessException extends RuntimeException {
+    static class OnBindIllegalAccessException extends RuntimeException {
 
         OnBindIllegalAccessException() {
             super("Method onBind not accessible in " +
