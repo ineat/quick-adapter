@@ -91,7 +91,7 @@ Configure your `build.gradle`:
 
 ```groovy
 dependencies {
-    compile 'com.ineat-group:quick-adapter:1.0.1'
+    compile 'com.ineat-group:quick-adapter:1.0.2'
 }
 ```
 
