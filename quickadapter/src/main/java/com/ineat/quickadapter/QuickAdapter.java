@@ -17,7 +17,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mslimani on 08/10/2016.
@@ -27,6 +29,7 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
     private final SparseArray<Class<? extends QuickItemRenderer<ITEM>>>
             mRegisterItemRendererSparseArray;
     // used for trace exception
+    private final Map<Class<? extends QuickItemRenderer>, QuickLayout> mCacheQuickLayout = new HashMap<>();
     private final SparseArray<Class<? extends QuickItemRenderer<ITEM>>> mCacheHashClassSparseArray;
     private QuickAdapterTypeFactory<ITEM, QuickItemRenderer<ITEM>> mQuickAdapterTypeFactory;
     private List<ITEM> mItems;
@@ -84,6 +87,11 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
         checkQuickLayout(rendererClass);
 
         registerType(getType(rendererClass), rendererClass);
+    }
+
+    public final void unregisterAllItemRenderer() {
+        mCacheQuickLayout.clear();
+        mRegisterItemRendererSparseArray.clear();
     }
 
     // region register
@@ -248,11 +256,19 @@ public class QuickAdapter<ITEM> extends RecyclerView.Adapter<QuickItemRenderer> 
                     .getSimpleName() + " is not registered");
         }
 
-        QuickLayout quickLayout = holderClass.getAnnotation(QuickLayout.class);
-        if (quickLayout == null) {
-            throw new IllegalArgumentException(holderClass + " is not annoted by " + QuickLayout
-                    .class.getSimpleName());
+
+        // optimisation cache annotation
+        if (!mCacheQuickLayout.containsKey(holderClass)) {
+            QuickLayout quickLayout = holderClass.getAnnotation(QuickLayout.class);
+            if (quickLayout == null) {
+                throw new IllegalArgumentException(holderClass + " is not annoted by " + QuickLayout
+                        .class.getSimpleName());
+            }
+            mCacheQuickLayout.put(holderClass, quickLayout);
         }
+
+        QuickLayout quickLayout = mCacheQuickLayout.get(holderClass);
+
 
         @LayoutRes int layoutRes = quickLayout.value();
         final View view = inflater.inflate(layoutRes, parent, false);
